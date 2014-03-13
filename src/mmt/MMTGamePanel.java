@@ -108,9 +108,8 @@ public class MMTGamePanel extends JPanel implements KeyListener
             DisDown = true;
         if (e.getKeyChar()=='w')
             WisDown = true;
-       
-        
-       
+        mySocketWriter.println("KEY\t"+getBinaryForKeys());
+        mySocketWriter.flush();
     }
     /**
      * detects when a key is let up by the user. One of the required methods
@@ -127,8 +126,8 @@ public class MMTGamePanel extends JPanel implements KeyListener
             DisDown = false;
         if (e.getKeyChar()=='w')
             WisDown = false;
-        
-        
+        mySocketWriter.println("KEY\t"+getBinaryForKeys());
+        mySocketWriter.flush();
     }
     
     public class IncomingReader implements Runnable
