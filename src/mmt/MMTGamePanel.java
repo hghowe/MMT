@@ -30,6 +30,11 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private final String ServerIP = "172.16.218.183";
     private Scanner mySocketScanner;
     private PrintWriter mySocketWriter;
+    private final String NEW_PLAYER = "NEW_PLAYER";
+    private final String LOC_UPDATE = "LOC_UPDATE";
+    private final String NEW_IT = "NEW_IT";
+    private final String REMOVE_PLAYER = "REMOVE_PLAYER";
+    private final String UPDATE_TIME = "UPDATE_TIME";
     
     public MMTGamePanel()
     {
@@ -83,6 +88,8 @@ public class MMTGamePanel extends JPanel implements KeyListener
             result+=8;
         return result;
     }
+    
+    
     /** 
      * detects when a key is pressed AND released. One of the required methods
      * in the KeyListener interface.
