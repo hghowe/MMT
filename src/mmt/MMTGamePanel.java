@@ -90,6 +90,42 @@ public class MMTGamePanel extends JPanel implements KeyListener
         return result;
     }
     
+    /**
+     * splits the command string by tabs and directs execution to the handler, 
+     * according to the command type listed first on the row.
+     * @param command 
+     */
+    public void parseCommand(String command)
+    {
+        String[] commands = command.split("\t");
+        if (commands[0].equals(NEW_PLAYER))
+            handleNewPlayer(commands);
+        if (commands[0].equals(LOC_UPDATE))
+            handleLocUpdate(commands);
+        if (commands[0].equals(NEW_IT))
+            handleNewIT(commands);
+        if (commands[0].equals(REMOVE_PLAYER))
+            handleRemovePlayer(commands);
+    }
+    
+    public void handleNewPlayer(String[] info)
+    {
+        System.out.println("Handling new player: "+info);
+    }
+
+    public void handleLocUpdate(String[] info)
+    {
+        System.out.println("Handling location update: "+info);
+    }
+    public void handleNewIT(String[] info)
+    {
+        System.out.println("Handling new \"it\": "+info);
+    }
+    public void handleRemovePlayer(String[] info)
+    {
+        System.out.println("Handling remove player: "+info);
+    }
+    
     
     /** 
      * detects when a key is pressed AND released. One of the required methods
