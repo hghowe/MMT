@@ -27,7 +27,19 @@ public class MMTGamePanel extends JPanel implements KeyListener
         WisDown = false;
     }
     
-    
+    public int getBinaryForKeys()
+    {
+        int result = 0;
+        if (WisDown)
+            result+=1;
+        if (DisDown)
+            result+=2;
+        if (SisDown)
+            result+=4;
+        if (AisDown)
+            result+=8;
+        return result;
+    }
     /** 
      * detects when a key is pressed AND released. One of the required methods
      * in the KeyListener interface.
