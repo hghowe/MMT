@@ -60,6 +60,8 @@ public class MMTGamePanel extends JPanel implements KeyListener
             
             mySocketWriter.println(name);
             mySocketWriter.flush();
+            
+            
         }
         catch (IOException ioe)
         {
@@ -136,6 +138,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             
             try
             {
+                myId = Integer.parseInt(mySocketScanner.nextLine());
                 while (true)
                     ;//parseCommand(mySocketScanner.nextLine();
                     //myTextArea.setText(myTextArea.getText()+mySocketScanner.nextLine()+"\n");
