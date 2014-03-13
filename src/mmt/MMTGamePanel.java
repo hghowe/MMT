@@ -8,6 +8,12 @@ package mmt;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -17,6 +23,13 @@ import javax.swing.JPanel;
 public class MMTGamePanel extends JPanel implements KeyListener
 {
     private boolean AisDown,SisDown,DisDown,WisDown;
+    private String name;
+    private int myId;
+    
+    private Socket mySocket;
+    private final String ServerIP = "172.16.218.183";
+    private Scanner mySocketScanner;
+    private PrintWriter mySocketWriter;
     
     public MMTGamePanel()
     {
@@ -25,6 +38,36 @@ public class MMTGamePanel extends JPanel implements KeyListener
         SisDown = false;
         DisDown = false;
         WisDown = false;
+        
+        do
+        {
+            name = JOptionPane.showInputDialog("What is your name?");
+        }while (name.equals(""));
+        
+        setupNetwork();
+    }
+    
+    public void setupNetwork()
+    {
+        try
+        {
+            mySocket = new Socket(ServerIP,5000);
+            mySocketScanner =  new Scanner(mySocket.getInputStream());
+            mySocketWriter = new PrintWriter(mySocket.getOutputStream());
+            
+            Thread readerThread = new Thread(new IncomingReader());
+            readerThread.start();
+            
+            mySocketWriter.println(name);
+            mySocketWriter.flush();
+            
+            
+        }
+        catch (IOException ioe)
+        {
+            System.out.println("I couldn't connect.");
+            ioe.printStackTrace();
+        }
     }
     
     public int getBinaryForKeys()
@@ -65,9 +108,8 @@ public class MMTGamePanel extends JPanel implements KeyListener
             DisDown = true;
         if (e.getKeyChar()=='w')
             WisDown = true;
-       
-        
-       
+        mySocketWriter.println("KEY\t"+getBinaryForKeys());
+        mySocketWriter.flush();
     }
     /**
      * detects when a key is let up by the user. One of the required methods
@@ -84,7 +126,27 @@ public class MMTGamePanel extends JPanel implements KeyListener
             DisDown = false;
         if (e.getKeyChar()=='w')
             WisDown = false;
-        
+        mySocketWriter.println("KEY\t"+getBinaryForKeys());
+        mySocketWriter.flush();
+    }
+    
+    public class IncomingReader implements Runnable
+    {
+        public void run()
+        {
+            
+            try
+            {
+                myId = Integer.parseInt(mySocketScanner.nextLine());
+                while (true)
+                    ;//parseCommand(mySocketScanner.nextLine();
+                    //myTextArea.setText(myTextArea.getText()+mySocketScanner.nextLine()+"\n");
+            }catch (NoSuchElementException nsee)
+            {
+                JOptionPane.showConfirmDialog(null, "Lost connection.");
+                System.exit(1);
+            }
+        }
         
     }
     
