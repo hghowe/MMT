@@ -35,6 +35,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private final String NEW_IT = "NEW_IT";
     private final String REMOVE_PLAYER = "REMOVE_PLAYER";
     private final String UPDATE_TIME = "UPDATE_TIME";
+    private final String KEY = "KEY";
     
     public MMTGamePanel()
     {
@@ -115,7 +116,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             DisDown = true;
         if (e.getKeyChar()=='w')
             WisDown = true;
-        mySocketWriter.println("KEY\t"+getBinaryForKeys());
+        mySocketWriter.println(KEY+"\t"+getBinaryForKeys());
         mySocketWriter.flush();
     }
     /**
@@ -133,7 +134,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             DisDown = false;
         if (e.getKeyChar()=='w')
             WisDown = false;
-        mySocketWriter.println("KEY\t"+getBinaryForKeys());
+        mySocketWriter.println(KEY+"\t"+getBinaryForKeys());
         mySocketWriter.flush();
     }
     
