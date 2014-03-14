@@ -11,10 +11,10 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -28,7 +28,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private String name;
     private int myId;
     private ClientPlayer self;
-    private Set<ClientPlayer> otherPlayers;
+    private Map<Integer,ClientPlayer> otherPlayers;
     
     private Socket mySocket;
     private final String ServerIP = "172.16.218.183";
@@ -48,7 +48,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
         SisDown = false;
         DisDown = false;
         WisDown = false;
-        otherPlayers = new HashSet<ClientPlayer>();
+        otherPlayers = new HashMap<Integer,ClientPlayer>();
         System.out.println("test");
         do
         {
@@ -124,6 +124,13 @@ public class MMTGamePanel extends JPanel implements KeyListener
     public void handleLocUpdate(String[] info)
     {
         System.out.println("Handling location update: "+info);
+        int which = Integer.parseInt(info[1]);
+        int x = Integer.parseInt(info[2]);
+        int y = Integer.parseInt(info[3]);
+        if (which == myId)
+            self.setPos(x, y);
+        
+        
     }
     public void handleNewIT(String[] info)
     {
@@ -191,7 +198,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             {
                 myId = Integer.parseInt(mySocketScanner.nextLine());
                 System.out.println("I have been assigned id#: "+myId);
-                //self = 
+                self = new ClientPlayer(myId,name);
                 while (true)
                     ;//parseCommand(mySocketScanner.nextLine();
                     //myTextArea.setText(myTextArea.getText()+mySocketScanner.nextLine()+"\n");
