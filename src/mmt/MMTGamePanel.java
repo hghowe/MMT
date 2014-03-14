@@ -28,6 +28,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private String name;
     private int myId;
     private ClientPlayer self;
+    private int itId;
     private Map<Integer,ClientPlayer> otherPlayers;
     
     private Socket mySocket;
@@ -129,8 +130,12 @@ public class MMTGamePanel extends JPanel implements KeyListener
         int y = Integer.parseInt(info[3]);
         if (which == myId)
             self.setPos(x, y);
-        
-        
+        else
+            if (otherPlayers.containsKey(which))
+                otherPlayers.get(which).setPos(x,y);
+            else
+                throw new RuntimeException("Attempted to modify position of object not on list.:"+which);
+        repaint();
     }
     public void handleNewIT(String[] info)
     {
@@ -199,6 +204,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
                 myId = Integer.parseInt(mySocketScanner.nextLine());
                 System.out.println("I have been assigned id#: "+myId);
                 self = new ClientPlayer(myId,name);
+                itId = myId;// Assume I'm it, until I hear otherwise.
                 while (true)
                     ;//parseCommand(mySocketScanner.nextLine();
                     //myTextArea.setText(myTextArea.getText()+mySocketScanner.nextLine()+"\n");
