@@ -182,6 +182,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             try
             {
                 myId = Integer.parseInt(mySocketScanner.nextLine());
+                System.out.println("I have been assigned id#: "+myId);
                 while (true)
                     ;//parseCommand(mySocketScanner.nextLine();
                     //myTextArea.setText(myTextArea.getText()+mySocketScanner.nextLine()+"\n");
