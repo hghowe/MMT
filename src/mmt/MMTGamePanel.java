@@ -11,8 +11,10 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
@@ -25,6 +27,8 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private boolean AisDown,SisDown,DisDown,WisDown;
     private String name;
     private int myId;
+    private ClientPlayer self;
+    private Set<ClientPlayer> otherPlayers;
     
     private Socket mySocket;
     private final String ServerIP = "172.16.218.183";
@@ -44,7 +48,8 @@ public class MMTGamePanel extends JPanel implements KeyListener
         SisDown = false;
         DisDown = false;
         WisDown = false;
-        
+        otherPlayers = new HashSet<ClientPlayer>();
+        System.out.println("test");
         do
         {
             name = JOptionPane.showInputDialog("What is your name?");
@@ -57,10 +62,13 @@ public class MMTGamePanel extends JPanel implements KeyListener
     {
         try
         {
+            //System.out.println("here1");
             mySocket = new Socket(ServerIP,5000);
+            //System.out.println("here2");
             mySocketScanner =  new Scanner(mySocket.getInputStream());
+            //System.out.println("here3");
             mySocketWriter = new PrintWriter(mySocket.getOutputStream());
-            
+            //System.out.println("here4");
             Thread readerThread = new Thread(new IncomingReader());
             readerThread.start();
             
@@ -183,6 +191,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             {
                 myId = Integer.parseInt(mySocketScanner.nextLine());
                 System.out.println("I have been assigned id#: "+myId);
+                //self = 
                 while (true)
                     ;//parseCommand(mySocketScanner.nextLine();
                     //myTextArea.setText(myTextArea.getText()+mySocketScanner.nextLine()+"\n");
