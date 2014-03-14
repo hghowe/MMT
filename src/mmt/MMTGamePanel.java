@@ -120,6 +120,9 @@ public class MMTGamePanel extends JPanel implements KeyListener
     public void handleNewPlayer(String[] info)
     {
         System.out.println("Handling new player: "+info);
+        ClientPlayer tempPlayer = new ClientPlayer(Integer.parseInt(info[1]),
+                                                    info[2]);
+        otherPlayers.put(Integer.parseInt(info[1]),tempPlayer);
     }
 
     public void handleLocUpdate(String[] info)
@@ -140,6 +143,14 @@ public class MMTGamePanel extends JPanel implements KeyListener
     public void handleNewIT(String[] info)
     {
         System.out.println("Handling new \"it\": "+info);
+        int newItId = Integer.parseInt(info[1]);
+        if (newItId == myId)
+            System.out.println("I am now it!");
+        else if (otherPlayers.containsKey(newItId))
+            System.out.println("Now player "+newItId+" is it.");
+        else
+            throw new RuntimeException("Attempted to make somebody it who isn't here!");
+        itId = newItId;
     }
     public void handleRemovePlayer(String[] info)
     {
