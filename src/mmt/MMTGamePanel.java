@@ -30,6 +30,12 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private final String ServerIP = "172.16.218.183";
     private Scanner mySocketScanner;
     private PrintWriter mySocketWriter;
+    private final String NEW_PLAYER = "NEW_PLAYER";
+    private final String LOC_UPDATE = "LOC_UPDATE";
+    private final String NEW_IT = "NEW_IT";
+    private final String REMOVE_PLAYER = "REMOVE_PLAYER";
+    private final String UPDATE_TIME = "UPDATE_TIME";
+    private final String KEY = "KEY";
     
     public MMTGamePanel()
     {
@@ -83,6 +89,44 @@ public class MMTGamePanel extends JPanel implements KeyListener
             result+=8;
         return result;
     }
+    
+    /**
+     * splits the command string by tabs and directs execution to the handler, 
+     * according to the command type listed first on the row.
+     * @param command 
+     */
+    public void parseCommand(String command)
+    {
+        String[] commands = command.split("\t");
+        if (commands[0].equals(NEW_PLAYER))
+            handleNewPlayer(commands);
+        if (commands[0].equals(LOC_UPDATE))
+            handleLocUpdate(commands);
+        if (commands[0].equals(NEW_IT))
+            handleNewIT(commands);
+        if (commands[0].equals(REMOVE_PLAYER))
+            handleRemovePlayer(commands);
+    }
+    
+    public void handleNewPlayer(String[] info)
+    {
+        System.out.println("Handling new player: "+info);
+    }
+
+    public void handleLocUpdate(String[] info)
+    {
+        System.out.println("Handling location update: "+info);
+    }
+    public void handleNewIT(String[] info)
+    {
+        System.out.println("Handling new \"it\": "+info);
+    }
+    public void handleRemovePlayer(String[] info)
+    {
+        System.out.println("Handling remove player: "+info);
+    }
+    
+    
     /** 
      * detects when a key is pressed AND released. One of the required methods
      * in the KeyListener interface.
@@ -108,7 +152,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             DisDown = true;
         if (e.getKeyChar()=='w')
             WisDown = true;
-        mySocketWriter.println("KEY\t"+getBinaryForKeys());
+        mySocketWriter.println(KEY+"\t"+getBinaryForKeys());
         mySocketWriter.flush();
     }
     /**
@@ -126,7 +170,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             DisDown = false;
         if (e.getKeyChar()=='w')
             WisDown = false;
-        mySocketWriter.println("KEY\t"+getBinaryForKeys());
+        mySocketWriter.println(KEY+"\t"+getBinaryForKeys());
         mySocketWriter.flush();
     }
     
@@ -138,6 +182,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             try
             {
                 myId = Integer.parseInt(mySocketScanner.nextLine());
+                System.out.println("I have been assigned id#: "+myId);
                 while (true)
                     ;//parseCommand(mySocketScanner.nextLine();
                     //myTextArea.setText(myTextArea.getText()+mySocketScanner.nextLine()+"\n");
