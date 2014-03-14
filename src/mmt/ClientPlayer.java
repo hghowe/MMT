@@ -50,6 +50,12 @@ public class ClientPlayer {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public void setPos(int x, int y)
+    {
+        setX(x);
+        setY(y);
+    }
 
     @Override
     public String toString() {
