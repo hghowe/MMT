@@ -50,7 +50,7 @@ public class MMTServer extends TimerTask{
                                             // 2) how many milliseconds
                                             // between subsequent calls?
         players = new HashMap<Integer, MMTServerPlayer>();
-        
+        setupNetworking();
     }
     
     public void setupNetworking()
@@ -60,11 +60,13 @@ public class MMTServer extends TimerTask{
             mySocket = new ServerSocket(5000);
             while(true)
             {
+                System.out.println("Waiting for Client");
                 Socket playerSocket = mySocket.accept();
+                System.out.println("Client Found");
                 PrintWriter pw = new PrintWriter(playerSocket.getOutputStream());
                 ClientReader cr = new ClientReader(playerSocket, pw);
                 MMTServerPlayer player = new MMTServerPlayer(new Point(400, 400), this.nextAvailableID, pw, cr.myName);
-                
+                System.out.println(player.getID() + ":" + player.getName());
                 this.nextAvailableID++;
             }
         }
