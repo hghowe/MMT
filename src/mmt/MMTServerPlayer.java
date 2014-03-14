@@ -62,6 +62,11 @@ public class MMTServerPlayer {
         return myID;
     }
     
+    public String getName()
+    {
+        return myName;
+    }
+    
     public void sendMessage(String message)
     {
         myWriter.println(message);
