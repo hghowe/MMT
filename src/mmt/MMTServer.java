@@ -6,9 +6,13 @@
 
 package mmt;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Timer;
@@ -21,6 +25,9 @@ import java.util.TimerTask;
 public class MMTServer extends TimerTask{
 
     private int nextAvailableID;
+    private ServerSocket mySocket;
+    private Map<Integer, MMTServerPlayer> players;
+    
     
     /**
      * @param args the command line arguments
@@ -42,12 +49,29 @@ public class MMTServer extends TimerTask{
                                             // until I call it the first time?
                                             // 2) how many milliseconds
                                             // between subsequent calls?
+        players = new HashMap<Integer, MMTServerPlayer>();
         
     }
     
     public void setupNetworking()
     {
-        
+        try
+        {
+            mySocket = new ServerSocket(5000);
+            while(true)
+            {
+                Socket playerSocket = mySocket.accept();
+                PrintWriter pw = new PrintWriter(playerSocket.getOutputStream());
+                ClientReader cr = new ClientReader(playerSocket, pw);
+                MMTServerPlayer player = new MMTServerPlayer(new Point(400, 400), this.nextAvailableID, pw, cr.myName);
+                
+                this.nextAvailableID++;
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
     
     public void go()
@@ -63,6 +87,31 @@ public class MMTServer extends TimerTask{
     public void disconnectPlayer(int id)
     {
         
+    }
+    
+    public void broadcast(int messageType, Object[] params)
+    {
+        String message = getMessageStringFromIntType(messageType);
+        
+    }
+    
+    private String getMessageStringFromIntType(int type)
+    {
+        switch(type)
+        {
+            case 0:
+                return "NEW_PLAYER";
+            case 1:
+                return "LOC_UPDATE";
+            case 2:
+                return "NEW_IT";
+            case 3:
+                return "REMOVE_PLAYER";
+            case 4:
+                return "UPDATE_TIME";
+            default:
+                return "";
+        }
     }
     
     private class ClientReader implements Runnable
@@ -82,6 +131,8 @@ public class MMTServer extends TimerTask{
                 myScanner = new Scanner(mySocket.getInputStream());
                 myName = myScanner.nextLine();
                 myID = nextAvailableID;
+                myPrintwriter.println(myID);
+                myPrintwriter.flush();
                 new Thread(this).start();
             }
             catch (IOException e)
