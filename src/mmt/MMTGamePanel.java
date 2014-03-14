@@ -6,6 +6,8 @@
 
 package mmt;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -165,6 +167,28 @@ public class MMTGamePanel extends JPanel implements KeyListener
         else
             throw new RuntimeException("Attempted to eject player who is not playing.");
         repaint();
+    }
+    
+    @Override
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        for (int i :otherPlayers.keySet())
+        {
+            if (itId == otherPlayers.get(i).getId())
+                g.setColor(Color.red);
+            else
+                g.setColor(Color.green);
+            g.fillRect(otherPlayers.get(i).getX(),
+                          otherPlayers.get(i).getY(),
+                          10,10);
+
+        }   
+        if (itId==self.getId())
+            g.setColor(Color.red);
+        else
+            g.setColor(Color.green);
+        g.fillOval(self.getX(), self.getY(), 10, 10);
     }
     
     
