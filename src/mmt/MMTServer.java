@@ -45,14 +45,14 @@ public class MMTServer extends TimerTask{
         super();
         nextAvailableID = 0;
         Timer t = new Timer();
-        t.scheduleAtFixedRate(this,0,2000); // parameters: 0) which TimerTask 
+        t.scheduleAtFixedRate(this,0,20); // parameters: 0) which TimerTask 
                                             // object's "run" method should I  
                                             // call? 1) how many milliseconds  
                                             // until I call it the first time?
                                             // 2) how many milliseconds
                                             // between subsequent calls?
         players = new HashMap<Integer, MMTServerPlayer>();
-        setupNetworking();
+        
     }
     
     public void setupNetworking()
@@ -101,6 +101,7 @@ public class MMTServer extends TimerTask{
     public void go()
     {
         System.out.println("Starting Program.");
+        setupNetworking();
     }
     
     public void run()
@@ -151,6 +152,8 @@ public class MMTServer extends TimerTask{
     private void handleMessage(String message, int playerID)
     {
         String[] messageComponents = message.split("\t");
+        
+        System.out.println(message + "From "+players.get(playerID).getName());
         
         if(messageComponents[0].equals("KEY"))
         {

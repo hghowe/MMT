@@ -69,7 +69,7 @@ public class MMTServerPlayer {
             }
         if(update)
             MMTServer.getInstance().broadcast(1, new Object[]{
-                myLoc.x, myLoc.y
+                myID, myLoc.x, myLoc.y
             });
     }
     
