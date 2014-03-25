@@ -35,7 +35,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private Map<Integer,ClientPlayer> otherPlayers;
     
     private Socket mySocket;
-    private final String ServerIP = "172.16.218.183";
+    private final String ServerIP = "172.16.219.166";
     private Scanner mySocketScanner;
     private PrintWriter mySocketWriter;
     private final String NEW_PLAYER = "NEW_PLAYER";
@@ -44,6 +44,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private final String REMOVE_PLAYER = "REMOVE_PLAYER";
     private final String UPDATE_TIME = "UPDATE_TIME";
     private final String KEY = "KEY";
+    private final int SIZE = 10;
     private  Font myFont;
     
     public MMTGamePanel()
@@ -101,6 +102,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             result+=4;
         if (AisDown)
             result+=8;
+        System.out.println(result);
         return result;
     }
     
@@ -111,6 +113,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
      */
     public void parseCommand(String command)
     {
+        System.out.println(command);
         String[] commands = command.split("\t");
         if (commands[0].equals(NEW_PLAYER))
             handleNewPlayer(commands);
@@ -185,23 +188,23 @@ public class MMTGamePanel extends JPanel implements KeyListener
                 g.setColor(Color.green);
             g.fillRect(otherPlayers.get(i).getX(),
                           otherPlayers.get(i).getY(),
-                          10,10);
+                          SIZE,SIZE);
             int w = g.getFontMetrics().stringWidth(otherPlayers.get(i).getName());
             g.drawString(otherPlayers.get(i).getName(), 
-                         otherPlayers.get(i).getX()-w/2, 
-                         otherPlayers.get(i).getY()-12);
+                         otherPlayers.get(i).getX()+SIZE/2-w/2, 
+                         otherPlayers.get(i).getY()-4);
         }   
         if (itId==self.getId())
             g.setColor(Color.red);
         else
             g.setColor(Color.green);
-        g.fillOval(self.getX(), self.getY(), 10, 10);
+        g.fillOval(self.getX(), self.getY(), SIZE, SIZE);
         int w = g.getFontMetrics().stringWidth(self.getName());
         g.drawString(self.getName(),
-                     self.getX()+5 - w/2,
-                     self.getY()+5 - 12);
+                     self.getX()+SIZE/2 - w/2,
+                     self.getY()+4);
         g.setColor(Color.black);
-        g.drawOval(self.getX(), self.getY(), 10, 10);
+        g.drawOval(self.getX(), self.getY(), SIZE, SIZE);
     }
     
     
@@ -264,7 +267,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
                 self = new ClientPlayer(myId,name);
                 itId = myId;// Assume I'm it, until I hear otherwise.
                 while (true)
-                    ;//parseCommand(mySocketScanner.nextLine();
+                    parseCommand(mySocketScanner.nextLine());
                     //myTextArea.setText(myTextArea.getText()+mySocketScanner.nextLine()+"\n");
             }catch (NoSuchElementException nsee)
             {
