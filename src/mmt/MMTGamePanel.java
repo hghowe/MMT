@@ -7,6 +7,7 @@
 package mmt;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -43,6 +44,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private final String REMOVE_PLAYER = "REMOVE_PLAYER";
     private final String UPDATE_TIME = "UPDATE_TIME";
     private final String KEY = "KEY";
+    private  Font myFont;
     
     public MMTGamePanel()
     {
@@ -51,6 +53,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
         SisDown = false;
         DisDown = false;
         WisDown = false;
+        myFont = new Font("Times",Font.PLAIN,12);
         otherPlayers = new HashMap<Integer,ClientPlayer>();
         System.out.println("test");
         do
@@ -172,6 +175,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
     @Override
     public void paintComponent(Graphics g)
     {
+        g.setFont(myFont);
         super.paintComponent(g);
         for (int i :otherPlayers.keySet())
         {
@@ -182,13 +186,22 @@ public class MMTGamePanel extends JPanel implements KeyListener
             g.fillRect(otherPlayers.get(i).getX(),
                           otherPlayers.get(i).getY(),
                           10,10);
-
+            int w = g.getFontMetrics().stringWidth(otherPlayers.get(i).getName());
+            g.drawString(otherPlayers.get(i).getName(), 
+                         otherPlayers.get(i).getX()-w/2, 
+                         otherPlayers.get(i).getY()-12);
         }   
         if (itId==self.getId())
             g.setColor(Color.red);
         else
             g.setColor(Color.green);
         g.fillOval(self.getX(), self.getY(), 10, 10);
+        int w = g.getFontMetrics().stringWidth(self.getName());
+        g.drawString(self.getName(),
+                     self.getX()+5 - w/2,
+                     self.getY()+5 - 12);
+        g.setColor(Color.black);
+        g.drawOval(self.getX(), self.getY(), 10, 10);
     }
     
     
