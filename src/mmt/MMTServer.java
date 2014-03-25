@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,13 +28,14 @@ public class MMTServer extends TimerTask{
     private int nextAvailableID;
     private ServerSocket mySocket;
     private Map<Integer, MMTServerPlayer> players;
-    
+    private static MMTServer theApp;
+    private int itID = -1;
     
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        MMTServer theApp = new MMTServer();
+        theApp = new MMTServer();
         theApp.go();
         //THIS EDIT CAN BE PUSHED
     }
@@ -43,14 +45,14 @@ public class MMTServer extends TimerTask{
         super();
         nextAvailableID = 0;
         Timer t = new Timer();
-        t.scheduleAtFixedRate(this,0,2000); // parameters: 0) which TimerTask 
+        t.scheduleAtFixedRate(this,0,20); // parameters: 0) which TimerTask 
                                             // object's "run" method should I  
                                             // call? 1) how many milliseconds  
                                             // until I call it the first time?
                                             // 2) how many milliseconds
                                             // between subsequent calls?
         players = new HashMap<Integer, MMTServerPlayer>();
-        setupNetworking();
+        
     }
     
     public void setupNetworking()
@@ -61,12 +63,32 @@ public class MMTServer extends TimerTask{
             while(true)
             {
                 System.out.println("Waiting for Client");
+                
                 Socket playerSocket = mySocket.accept();
-                System.out.println("Client Found");
+                
                 PrintWriter pw = new PrintWriter(playerSocket.getOutputStream());
                 ClientReader cr = new ClientReader(playerSocket, pw);
                 MMTServerPlayer player = new MMTServerPlayer(new Point(400, 400), this.nextAvailableID, pw, cr.myName);
-                System.out.println(player.getID() + ":" + player.getName());
+                
+                broadcast(0, new Object[]{
+                        nextAvailableID, player.getName()
+                });
+                
+                Set<Integer> keys = players.keySet();
+                
+                if(keys.size() == 0)
+                    itID = nextAvailableID;
+                
+                for(int key : keys)
+                {
+                    player.sendMessage(this.getMessageStringFromIntType(0)+"\t"+key+"\t"+players.get(key).getName());
+                }
+                
+                player.sendMessage(this.getMessageStringFromIntType(2)+"\t"+itID);
+                
+                players.put(nextAvailableID, player);
+                System.out.println("Client Found");
+                
                 this.nextAvailableID++;
             }
         }
@@ -79,21 +101,64 @@ public class MMTServer extends TimerTask{
     public void go()
     {
         System.out.println("Starting Program.");
+        setupNetworking();
     }
     
     public void run()
     {
         System.out.println("executing run() method");
+        Set<Integer> keys = players.keySet();
+        int nextItID = itID;
+        for(int key : keys)
+        {
+            players.get(key).move();
+            if(key != itID)
+                if(players.get(key).collides(players.get(itID)))
+                {
+                    nextItID = key;
+                    players.get(key).setCantMove();
+                }
+        }
+        if(itID != nextItID)
+        {
+            itID = nextItID;
+            broadcast(2, new Object[]{
+                itID
+            });
+        }
     }
     
     public void disconnectPlayer(int id)
     {
+        players.remove(id);
         
+        broadcast(3, new Object[]{ id });
     }
     
     public void broadcast(int messageType, Object[] params)
     {
         String message = getMessageStringFromIntType(messageType);
+        for(Object obj : params)
+        {
+            message += "\t"+obj;
+        }
+        Set<Integer> keys = players.keySet();
+        for(Integer key : keys)
+        {
+            players.get(key).sendMessage(message);
+        }
+    }
+    
+    private void handleMessage(String message, int playerID)
+    {
+        String[] messageComponents = message.split("\t");
+        
+        System.out.println(message + "From "+players.get(playerID).getName());
+        
+        if(messageComponents[0].equals("KEY"))
+        {
+            players.get(playerID).setMovement(Integer.parseInt(messageComponents[1]));
+        }
         
     }
     
@@ -112,7 +177,7 @@ public class MMTServer extends TimerTask{
             case 4:
                 return "UPDATE_TIME";
             default:
-                return "";
+                return "NO_ACTION_ASSIGNED";
         }
     }
     
@@ -156,7 +221,7 @@ public class MMTServer extends TimerTask{
             {
                 while(true)
                 {
-                    
+                    handleMessage(myScanner.nextLine(), myID);
                 }
             }
             catch(NoSuchElementException nse)
@@ -164,5 +229,10 @@ public class MMTServer extends TimerTask{
                 disconnectPlayer(myID);
             }
         }
+    }
+    
+    public static MMTServer getInstance()
+    {
+        return theApp;
     }
 }

@@ -11,6 +11,7 @@ public class MMTServerPlayer {
     public int movementType;
     private PrintWriter myWriter;
     private String myName;
+    private int paralysisTimer = 0;
     
     public MMTServerPlayer(Point location, int ID, PrintWriter pw, String name)
     {
@@ -19,6 +20,9 @@ public class MMTServerPlayer {
         this.myWriter = pw;
         this.myName = name;
         movementType = 0;
+        MMTServer.getInstance().broadcast(0, new Object[]{
+                myID, myName
+        });
     }
     
     public void setMovement(int movementAllowances)
@@ -33,18 +37,40 @@ public class MMTServerPlayer {
      */
     public void move()
     {
+        if(paralysisTimer > 0)
+        {
+            paralysisTimer--;
+            return;
+        }
+        boolean update = false;
         if((movementType & 1) == 1)
             if(myLoc.y-2 >= 0)
+            {
                 myLoc.y-=2;
+                update = true;
+            }
         else if((movementType & 4) == 4)
             if(myLoc.y+12 < 800)
+            {
                 myLoc.y+=2;
+                update = true;
+            }
         if((movementType & 2) == 2)
             if(myLoc.x+12 < 800)
+            {
                 myLoc.x+=2;
+                update = true;
+            }
         else if((movementType & 8) == 8)
             if(myLoc.x-2 >= 0)
+            {
                 myLoc.x-=2;
+                update = true;
+            }
+        if(update)
+            MMTServer.getInstance().broadcast(1, new Object[]{
+                myID, myLoc.x, myLoc.y
+            });
     }
     
     public int getXLoc()
@@ -71,5 +97,18 @@ public class MMTServerPlayer {
     {
         myWriter.println(message);
         myWriter.flush();
+    }
+
+    public boolean collides(MMTServerPlayer mmtServerPlayer)
+    {
+        if((mmtServerPlayer.getXLoc() >= myLoc.x && mmtServerPlayer.getXLoc() <= myLoc.x + 10) || (mmtServerPlayer.getXLoc()+10 >= myLoc.x && mmtServerPlayer.getXLoc()+10 <= myLoc.x + 10))
+            if((mmtServerPlayer.getYLoc() >= myLoc.y && mmtServerPlayer.getYLoc() <= myLoc.y + 10) || (mmtServerPlayer.getYLoc()+10 >= myLoc.y && mmtServerPlayer.getYLoc()+10 <= myLoc.y + 10))
+                return true;
+        return false;
+    }
+
+    public void setCantMove()
+    {
+        paralysisTimer = 10;
     }
 }
