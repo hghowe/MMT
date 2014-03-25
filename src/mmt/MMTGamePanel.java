@@ -45,6 +45,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
     private final String UPDATE_TIME = "UPDATE_TIME";
     private final String KEY = "KEY";
     private final int SIZE = 10;
+    private final int NAME_OFFSET = 12; // vertical offset for names floating above shape
     private  Font myFont;
     
     public MMTGamePanel()
@@ -192,7 +193,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             int w = g.getFontMetrics().stringWidth(otherPlayers.get(i).getName());
             g.drawString(otherPlayers.get(i).getName(), 
                          otherPlayers.get(i).getX()+SIZE/2-w/2, 
-                         otherPlayers.get(i).getY()-4);
+                         otherPlayers.get(i).getY()-NAME_OFFSET);
         }   
         if (itId==self.getId())
             g.setColor(Color.red);
@@ -202,7 +203,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
         int w = g.getFontMetrics().stringWidth(self.getName());
         g.drawString(self.getName(),
                      self.getX()+SIZE/2 - w/2,
-                     self.getY()+4);
+                     self.getY()-NAME_OFFSET);
         g.setColor(Color.black);
         g.drawOval(self.getX(), self.getY(), SIZE, SIZE);
     }
