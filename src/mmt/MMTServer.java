@@ -114,7 +114,6 @@ public class MMTServer extends TimerTask{
     
     public void run()
     {
-        System.out.println("executing run() method");
         Set<Integer> keys = players.keySet();
         int nextItID = itID;
         for(int key : keys)
