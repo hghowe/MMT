@@ -120,5 +120,8 @@ public class MMTServerPlayer {
     public void warp()
     {
         myLoc = new Point(new Random().nextInt(800), new Random().nextInt(800));
+        MMTServer.getInstance().broadcast(1, new Object[]{
+                myID, myLoc.x, myLoc.y
+            });
     }
 }
