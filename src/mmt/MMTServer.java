@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -31,6 +32,8 @@ public class MMTServer extends TimerTask{
     private Map<Integer, MMTServerPlayer> players;
     private static MMTServer theApp;
     private int itID = -1;
+    private ArrayList<Integer> removeIDsList;
+    private boolean removing = false;
     
     /**
      * @param args the command line arguments
@@ -53,7 +56,7 @@ public class MMTServer extends TimerTask{
                                             // 2) how many milliseconds
                                             // between subsequent calls?
         players = new HashMap<Integer, MMTServerPlayer>();
-        
+        removeIDsList = new ArrayList<Integer>();
     }
     
     public void setupNetworking()
@@ -134,13 +137,22 @@ public class MMTServer extends TimerTask{
                 itID
             });
         }
+        while(removing);
+        removing = true;
+        for(int id : removeIDsList)
+        {
+            players.remove(id);
+            broadcast(3, new Object[]{ id });
+        }
+        removing = false;
     }
     
     public void disconnectPlayer(int id)
     {
-        players.remove(id);
-        
-        broadcast(3, new Object[]{ id });
+        while(removing);
+        removing = true;
+        removeIDsList.add(id);
+        removing = false;
     }
     
     public void broadcast(int messageType, Object[] params)
