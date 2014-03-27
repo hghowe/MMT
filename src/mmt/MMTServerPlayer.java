@@ -106,6 +106,8 @@ public class MMTServerPlayer {
 
     public boolean collides(MMTServerPlayer mmtServerPlayer)
     {
+        if(mmtServerPlayer == null)
+            return false;
         if((mmtServerPlayer.getXLoc() >= myLoc.x && mmtServerPlayer.getXLoc() <= myLoc.x + 10) || (mmtServerPlayer.getXLoc()+10 >= myLoc.x && mmtServerPlayer.getXLoc()+10 <= myLoc.x + 10))
             if((mmtServerPlayer.getYLoc() >= myLoc.y && mmtServerPlayer.getYLoc() <= myLoc.y + 10) || (mmtServerPlayer.getYLoc()+10 >= myLoc.y && mmtServerPlayer.getYLoc()+10 <= myLoc.y + 10))
                 return true;
