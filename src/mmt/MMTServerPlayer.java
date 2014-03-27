@@ -44,11 +44,13 @@ public class MMTServerPlayer {
         }
         boolean update = false;
         if((movementType & 1) == 1)
+        {
             if(myLoc.y-2 >= 0)
             {
                 myLoc.y-=2;
                 update = true;
             }
+        }
         else if((movementType & 4) == 4)
             if(myLoc.y+12 < 800)
             {
@@ -56,11 +58,13 @@ public class MMTServerPlayer {
                 update = true;
             }
         if((movementType & 2) == 2)
+        {
             if(myLoc.x+12 < 800)
             {
                 myLoc.x+=2;
                 update = true;
             }
+        }
         else if((movementType & 8) == 8)
             if(myLoc.x-2 >= 0)
             {
