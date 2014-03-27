@@ -103,7 +103,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
             result+=4;
         if (AisDown)
             result+=8;
-        System.out.println(result);
+        //System.out.println(result);
         return result;
     }
     
@@ -114,7 +114,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
      */
     public void parseCommand(String command)
     {
-        System.out.println(command);
+       // System.out.println(command);
         String[] commands = command.split("\t");
         if (commands[0].equals(NEW_PLAYER))
             handleNewPlayer(commands);
@@ -137,7 +137,7 @@ public class MMTGamePanel extends JPanel implements KeyListener
 
     public void handleLocUpdate(String[] info)
     {
-        System.out.println("Handling location update: "+info);
+        //System.out.println("Handling location update: "+info);
         int which = Integer.parseInt(info[1]);
         int x = Integer.parseInt(info[2]);
         int y = Integer.parseInt(info[3]);
