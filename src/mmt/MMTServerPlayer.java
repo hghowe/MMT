@@ -2,6 +2,7 @@ package mmt;
 
 import java.awt.Point;
 import java.io.PrintWriter;
+import java.util.Random;
 
 
 public class MMTServerPlayer {
@@ -114,5 +115,10 @@ public class MMTServerPlayer {
     public void setCantMove()
     {
         paralysisTimer = 10;
+    }
+
+    public void warp()
+    {
+        myLoc = new Point(new Random().nextInt(800), new Random().nextInt(800));
     }
 }

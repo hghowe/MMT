@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Timer;
@@ -68,7 +69,7 @@ public class MMTServer extends TimerTask{
                 
                 PrintWriter pw = new PrintWriter(playerSocket.getOutputStream());
                 ClientReader cr = new ClientReader(playerSocket, pw);
-                MMTServerPlayer player = new MMTServerPlayer(new Point(400, 400), this.nextAvailableID, pw, cr.myName);
+                MMTServerPlayer player = new MMTServerPlayer(new Point(new Random().nextInt(800), new Random().nextInt(800)), this.nextAvailableID, pw, cr.myName);
                 
                 broadcast(0, new Object[]{
                         nextAvailableID, player.getName()
@@ -87,6 +88,13 @@ public class MMTServer extends TimerTask{
                 player.sendMessage(this.getMessageStringFromIntType(2)+"\t"+itID);
                 
                 players.put(nextAvailableID, player);
+                
+                keys = players.keySet();
+                for(int key : keys)
+                {
+                    player.sendMessage(this.getMessageStringFromIntType(1)+"\t"+key+"\t"+player.getXLoc()+"\t"+player.getYLoc());
+                }
+                
                 System.out.println("Client Found");
                 
                 this.nextAvailableID++;
@@ -117,6 +125,7 @@ public class MMTServer extends TimerTask{
                 {
                     nextItID = key;
                     players.get(key).setCantMove();
+                    players.get(key).warp();
                 }
         }
         if(itID != nextItID)
